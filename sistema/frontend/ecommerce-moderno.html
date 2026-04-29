@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanFlow - Tienda de Ropa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #0f3460;
+            --accent: #e94560;
+            --light: #f4f4f4;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light);
+            color: var(--text);
+        }
+
+        /* HEADER */
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-menu button, .nav-menu a {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .nav-menu button:hover {
+            background: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .user-info {
+            background: var(--secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* LOGIN SCREEN */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .login-box {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .login-box h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .login-box p {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .login-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-admin {
+            background: var(--primary);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-admin:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-user {
+            background: var(--accent);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-user:hover {
+            background: #d63447;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.3);
+        }
+
+        /* HIDDEN SCREENS */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* FILTROS */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* GRID DE PRODUCTOS */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 280px;
+            background: #f0f0f0;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-category {
+            color: var(--accent);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-description {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 1rem;
+            flex: 1;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.7rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            flex: 1;
+        }
+
+        .btn-carrito {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-carrito:hover {
+            background: #d63447;
+        }
+
+        .btn-editar {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-editar:hover {
+            background: var(--primary);
+        }
+
+        .btn-eliminar {
+            background: #dc3545;
+            color: white;
+            padding: 0.7rem 1rem;
+        }
+
+        .btn-eliminar:hover {
+            background: #c82333;
+        }
+
+        /* ADMIN PANEL */
+        .admin-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .panel-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .panel-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: var(--secondary);
+            transform: scale(1.02);
+        }
+
+        /* TABLA DE PRODUCTOS */
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .products-table thead {
+            background: var(--primary);
+            color: white;
+        }
+
+        .products-table th, .products-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .products-table tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .products-table .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* CARRITO */
+        .cart-summary {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        .cart-summary h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+            align-items: center;
+        }
+
+        .cart-item:last-child {
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .total-price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-align: right;
+            padding: 1rem;
+        }
+
+        /* LOGOUT */
+        .btn-logout {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-logout:hover {
+            background: #d63447;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 1rem;
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-close:hover {
+            color: var(--accent);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .admin-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .login-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-screen">
+            <div class="login-box">
+                <h1>🛍️ UrbanFlow</h1>
+                <p>Tienda de Ropa para Hombres y Mujeres</p>
+                <div class="login-buttons">
+                    <button class="btn btn-admin" onclick="loginAsAdmin()">Administrador</button>
+                    <button class="btn btn-user" onclick="loginAsUser()">Cliente</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- USER SCREEN -->
+    <div id="userScreen" class="screen">
+        <header>
+            <div class="logo">🛍️ UrbanFlow</div>
+            <div class="nav-menu">
+                <button onclick="filterByCategory('todos')">Todos</button>
+                <button onclick="filterByCategory('Hombres')">Hombres</button>
+                <button onclick="filterByCategory('Mujeres')">Mujeres</button>
+                <button onclick="showCart()">🛒 Carrito (<span id="cartCount">0</span>)</button>
+                <button class="btn-logout" onclick="logout()">Salir</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <h1 style="margin-bottom: 2rem; color: var(--primary);">Catálogo de Productos</h1>
+            <div id="productsContainer" class="products-grid"></div>
+        </div>
+
+        <div id="cartContainer" class="cart-summary" style="display: none;">
+            <h2>Carrito de Compras</h2>
+            <div id="cartItems"></div>
+            <div class="total-price">Total: $<span id="totalPrice">0.00</span></div>
+            <button class="btn btn-submit" style="margin-top: 1rem;">Comprar Ahora</button>
+            <button class="btn" style="background: #666; margin-top: 0.5rem;" onclick="hideCart()">Seguir Comprando</button>
+        </div>
+    </div>
+
+    <!-- ADMIN SCREEN -->
+    <div id="adminScreen" class="screen">
+        <header>
+            <div class="logo">🛍️ UrbanFlow - Admin</div>
+            <div class="nav-menu">
+                <div class="user-info">👤 Administrador</div>
+                <button class="btn-logout" onclick="logout()">Salir</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="admin-panel">
+                <!-- AGREGAR PRODUCTO -->
+                <div class="panel-section">
+                    <h2>Agregar Nuevo Producto</h2>
+                    <form onsubmit="addProduct(event)">
+                        <div class="form-group">
+                            <label>Código</label>
+                            <input type="text" id="codigo" placeholder="Ej: URB001" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="nombre" placeholder="Nombre del producto" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Descripción</label>
+                            <textarea id="descripcion" placeholder="Descripción del producto"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select id="categoria" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Hombres">Hombres</option>
+                                <option value="Mujeres">Mujeres</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Talla</label>
+                            <select id="talla" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="XS">XS</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                                <option value="XXL">XXL</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Color</label>
+                            <input type="text" id="color" placeholder="Ej: Negro, Azul" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Precio</label>
+                            <input type="number" id="precio" placeholder="Ej: 29.99" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Stock</label>
+                            <input type="number" id="stock" placeholder="Cantidad disponible" required>
+                        </div>
+                        <div class="form-group">
+                            <label>URL Imagen</label>
+                            <input type="text" id="urlImagen" placeholder="Link de imagen (opcional)">
+                        </div>
+                        <button class="btn-submit">Agregar Producto</button>
+                    </form>
+                </div>
+
+                <!-- GESTIONAR PRODUCTOS -->
+                <div class="panel-section">
+                    <h2>Productos Existentes</h2>
+                    <div style="max-height: 600px; overflow-y: auto;">
+                        <table class="products-table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Nombre</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminProductsList">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api';
+        let currentUser = null;
+        let cart = [];
+        let allProducts = [];
+        let currentFilter = 'todos';
+
+        // FUNCIONES DE AUTENTICACIÓN
+        function loginAsAdmin() {
+            currentUser = 'admin';
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('adminScreen').classList.add('active');
+            loadAdminProducts();
+        }
+
+        function loginAsUser() {
+            currentUser = 'user';
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('userScreen').classList.add('active');
+            loadUserProducts();
+        }
+
+        function logout() {
+            currentUser = null;
+            cart = [];
+            document.getElementById('loginScreen').classList.add('active');
+            document.getElementById('userScreen').classList.remove('active');
+            document.getElementById('adminScreen').classList.remove('active');
+            document.getElementById('cartContainer').style.display = 'none';
+        }
+
+        // CARGAR PRODUCTOS
+        async function loadUserProducts() {
+            try {
+                const response = await fetch(`${API_URL}/productos`);
+                allProducts = await response.json();
+                displayProducts(allProducts);
+            } catch (error) {
+                console.error('Error:', error);
+                showDefaultProducts();
+            }
+        }
+
+        async function loadAdminProducts() {
+            try {
+                const response = await fetch(`${API_URL}/productos`);
+                allProducts = await response.json();
+                displayAdminProducts(allProducts);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function displayProducts(products) {
+            const container = document.getElementById('productsContainer');
+            container.innerHTML = '';
+
+            const filtered = currentFilter === 'todos' 
+                ? products 
+                : products.filter(p => p.categoria === currentFilter);
+
+            filtered.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                const imageUrl = product.urlImagen || getDefaultImage(product.categoria);
+                card.innerHTML = `
+                    <img src="${imageUrl}" alt="${product.nombre}" class="product-image" onerror="this.src='${getDefaultImage(product.categoria)}'">
+                    <div class="product-info">
+                        <div class="product-category">${product.categoria}</div>
+                        <div class="product-name">${product.nombre}</div>
+                        <div class="product-description">${product.descripcion || 'Sin descripción'}</div>
+                        <div style="color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;">Talla: ${product.talla} | Color: ${product.color}</div>
+                        <div class="product-price">$${parseFloat(product.precio).toFixed(2)}</div>
+                        <div class="product-actions">
+                            <button class="btn-small btn-carrito" onclick="addToCart(${product.id}, '${product.nombre}', ${product.precio})">
+                                Agregar al Carrito
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function displayAdminProducts(products) {
+            const tbody = document.getElementById('adminProductsList');
+            tbody.innerHTML = '';
+
+            products.forEach(product => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${product.codigo}</td>
+                    <td>${product.nombre}</td>
+                    <td>$${parseFloat(product.precio).toFixed(2)}</td>
+                    <td>${product.stock}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn-small btn-editar" onclick="editProduct(${product.id})">Editar</button>
+                            <button class="btn-small btn-eliminar" onclick="deleteProduct(${product.id})">Eliminar</button>
+                        </div>
+                    </td>
+                `;
+            });
+        }
+
+        // ADMIN FUNCTIONS
+        async function addProduct(event) {
+            event.preventDefault();
+
+            const producto = {
+                codigo: document.getElementById('codigo').value,
+                nombre: document.getElementById('nombre').value,
+                descripcion: document.getElementById('descripcion').value,
+                categoria: document.getElementById('categoria').value,
+                talla: document.getElementById('talla').value,
+                color: document.getElementById('color').value,
+                precio: parseFloat(document.getElementById('precio').value),
+                stock: parseInt(document.getElementById('stock').value),
+                urlImagen: document.getElementById('urlImagen').value,
+                material: 'Algodón/Poliéster',
+                marca: 'UrbanFlow'
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/productos`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(producto)
+                });
+
+                if (response.ok) {
+                    alert('✅ Producto agregado exitosamente');
+                    event.target.reset();
+                    loadAdminProducts();
+                } else {
+                    const error = await response.text();
+                    alert('❌ Error: ' + error);
+                }
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
+            }
+        }
+
+        async function deleteProduct(id) {
+            if (confirm('¿Estás seguro de eliminar este producto?')) {
+                try {
+                    const response = await fetch(`${API_URL}/productos/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        alert('✅ Producto eliminado');
+                        loadAdminProducts();
+                    } else {
+                        alert('❌ Error al eliminar');
+                    }
+                } catch (error) {
+                    alert('❌ Error: ' + error.message);
+                }
+            }
+        }
+
+        function editProduct(id) {
+            alert('Función de edición en desarrollo');
+        }
+
+        // CARRITO
+        function addToCart(id, nombre, precio) {
+            const item = { id, nombre, precio, cantidad: 1 };
+            const existing = cart.find(p => p.id === id);
+
+            if (existing) {
+                existing.cantidad++;
+            } else {
+                cart.push(item);
+            }
+
+            updateCartCount();
+            alert(`✅ ${nombre} agregado al carrito`);
+        }
+
+        function updateCartCount() {
+            document.getElementById('cartCount').textContent = cart.length;
+        }
+
+        function showCart() {
+            const container = document.getElementById('cartItems');
+            container.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const subtotal = item.precio * item.cantidad;
+                total += subtotal;
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.nombre}</strong><br>
+                            Cantidad: ${item.cantidad} x $${item.precio.toFixed(2)}
+                        </div>
+                        <button class="btn-small btn-eliminar" onclick="removeFromCart(${item.id})" style="width: auto;">Eliminar</button>
+                    </div>
+                `;
+            });
+
+            document.getElementById('totalPrice').textContent = total.toFixed(2);
+            document.getElementById('cartContainer').style.display = 'block';
+            document.getElementById('productsContainer').style.display = 'none';
+        }
+
+        function hideCart() {
+            document.getElementById('cartContainer').style.display = 'none';
+            document.getElementById('productsContainer').style.display = 'grid';
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartCount();
+            if (cart.length > 0) {
+                showCart();
+            } else {
+                hideCart();
+            }
+        }
+
+        function filterByCategory(category) {
+            currentFilter = category;
+            displayProducts(allProducts);
+        }
+
+        function getDefaultImage(categoria) {
+            const images = {
+                'Hombres': 'https://images.unsplash.com/photo-1505026807396-fca5e36b0c0c?w=300&h=300&fit=crop',
+                'Mujeres': 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=300&h=300&fit=crop'
+            };
+            return images[categoria] || images['Hombres'];
+        }
+
+        function showDefaultProducts() {
+            allProducts = [
+                {
+                    id: 1,
+                    codigo: 'URB001',
+                    nombre: 'Camiseta Clásica Hombres',
+                    descripcion: 'Camiseta de algodón 100% premium',
+                    categoria: 'Hombres',
+                    talla: 'M',
+                    color: 'Negro',
+                    precio: 29.99,
+                    stock: 50,
+                    urlImagen: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop'
+                },
+                {
+                    id: 2,
+                    codigo: 'URB002',
+                    nombre: 'Pantalón Casual Hombres',
+                    descripcion: 'Pantalón cómodo y moderno',
+                    categoria: 'Hombres',
+                    talla: 'L',
+                    color: 'Azul',
+                    precio: 59.99,
+                    stock: 30,
+                    urlImagen: 'https://images.unsplash.com/photo-1542272604-787c62d465d1?w=300&h=300&fit=crop'
+                },
+                {
+                    id: 3,
+                    codigo: 'URB003',
+                    nombre: 'Sudadera Premium Hombres',
+                    descripcion: 'Sudadera cómoda para usar diario',
+                    categoria: 'Hombres',
+                    talla: 'M',
+                    color: 'Gris',
+                    precio: 49.99,
+                    stock: 25,
+                    urlImagen: 'https://images.unsplash.com/photo-1556821552-107d2c41ff50?w=300&h=300&fit=crop'
+                },
+                {
+                    id: 4,
+                    codigo: 'URB004',
+                    nombre: 'Vestido Elegante Mujeres',
+                    descripcion: 'Vestido casual elegante para cualquier ocasión',
+                    categoria: 'Mujeres',
+                    talla: 'S',
+                    color: 'Rojo',
+                    precio: 69.99,
+                    stock: 15,
+                    urlImagen: 'https://images.unsplash.com/photo-1612336307429-8a88e8d08dbb?w=300&h=300&fit=crop'
+                },
+                {
+                    id: 5,
+                    codigo: 'URB005',
+                    nombre: 'Blusa Elegante Mujeres',
+                    descripcion: 'Blusa fina y elegante para ocasiones especiales',
+                    categoria: 'Mujeres',
+                    talla: 'M',
+                    color: 'Blanco',
+                    precio: 79.99,
+                    stock: 20,
+                    urlImagen: 'https://images.unsplash.com/photo-1595634674602-92f50b3a9f8d?w=300&h=300&fit=crop'
+                },
+                {
+                    id: 6,
+                    codigo: 'URB006',
+                    nombre: 'Shorts Deportivos Mujeres',
+                    descripcion: 'Shorts cómodos para entrenar',
+                    categoria: 'Mujeres',
+                    talla: 'M',
+                    color: 'Negro',
+                    precio: 39.99,
+                    stock: 40,
+                    urlImagen: 'https://images.unsplash.com/photo-1618667398259-01e2fb2e7507?w=300&h=300&fit=crop'
+                }
+            ];
+            displayProducts(allProducts);
+        }
+
+        // Cargar productos de ejemplo si API falla
+        if (!currentUser) {
+            showDefaultProducts();
+        }
+    </script>
+</body>
+</html>
